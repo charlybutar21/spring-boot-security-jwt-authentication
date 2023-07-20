@@ -1,0 +1,36 @@
+### Register
+POST http://localhost:8080/api/auth/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username" : "charlybutar21",
+  "password" : "rahasia",
+  "email": "test@gmail.com",
+  "name" : "Charly Butarbutar"
+}
+
+
+### Login
+POST http://localhost:8080/api/auth/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "charlybutar21",
+  "password": "rahasia"
+}
+
+
+### Vacancy List
+GET http://localhost:8080/api/vacancies/
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaGFybHlidXRhcjIxIiwiaWF0IjoxNjg5ODU3ODg2LCJleHAiOjE2ODk5NDQyODZ9.9tBCS-4ZyTFteB9K057oHVwHlOAvb3QeyjP0e-y0lcg
+
+
+### Vacancy Detail
+GET http://localhost:8080/api/vacancies/32bf67e5-4971-47ce-985c-44b6b3860cdb
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaGFybHlidXRhcjIxIiwiaWF0IjoxNjg5ODU3ODg2LCJleHAiOjE2ODk5NDQyODZ9.9tBCS-4ZyTFteB9K057oHVwHlOAvb3QeyjP0e-y0lcg
