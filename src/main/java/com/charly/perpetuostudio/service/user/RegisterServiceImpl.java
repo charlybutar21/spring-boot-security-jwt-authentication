@@ -7,7 +7,7 @@ import com.charly.perpetuostudio.models.RoleType;
 import com.charly.perpetuostudio.models.User;
 import com.charly.perpetuostudio.repository.RoleRepository;
 import com.charly.perpetuostudio.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,26 +15,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
+@AllArgsConstructor
 public class RegisterServiceImpl implements RegisterService {
 
-    @Autowired
     UserRepository userRepository;
 
-    @Autowired
     RoleRepository roleRepository;
 
-    @Autowired
     PasswordEncoder encoder;
 
     @Override
     public void process(RegisterRequest request) throws InvalidRequestException {
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new InvalidRequestException("username already exists");
-        }
+        boolean usernameExists = userRepository.existsByUsername(request.getUsername());
+        if (usernameExists) throw new InvalidRequestException("username already exists");
 
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new InvalidRequestException("email already exists");
-        }
+        boolean emailExists = userRepository.existsByEmail(request.getEmail());
+        if (emailExists) throw new InvalidRequestException("email already exists");
 
         User user = new User();
         user.setUsername(request.getUsername());
@@ -46,29 +42,14 @@ public class RegisterServiceImpl implements RegisterService {
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
-            Role userRole = roleRepository.findByName(RoleType.ROLE_USER)
+            Role userRole = roleRepository.findByName(RoleType.ROLE_USER.toString())
                     .orElseThrow(() -> new RuntimeException("role not found"));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(RoleType.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("role not found"));
-                        roles.add(adminRole);
-
-                        break;
-                    case "mod":
-                        Role modRole = roleRepository.findByName(RoleType.ROLE_MODERATOR)
-                                .orElseThrow(() -> new RuntimeException("role not found"));
-                        roles.add(modRole);
-
-                        break;
-                    default:
-                        Role userRole = roleRepository.findByName(RoleType.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("role not found"));
-                        roles.add(userRole);
-                }
+                Role adminRole = roleRepository.findByName(role)
+                        .orElseThrow(() -> new RuntimeException("role not found"));
+                roles.add(adminRole);
             });
         }
 
